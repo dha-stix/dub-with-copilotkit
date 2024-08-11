@@ -44,6 +44,7 @@ Dub.co is the open-source link management infrastructure for modern marketing te
 ## Tech Stack
 
 - [Next.js](https://nextjs.org/) – framework
+- [CopilotKit](https://github.com/CopilotKit/CopilotKit) –  AI Copilot
 - [TypeScript](https://www.typescriptlang.org/) – language
 - [Tailwind](https://tailwindcss.com/) – CSS
 - [Upstash](https://upstash.com/) – redis
