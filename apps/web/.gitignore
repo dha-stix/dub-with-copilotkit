@@ -1,0 +1,9 @@
+
+# Ignore Next.js build output
+.next/
+
+# Ignore Next.js build output
+.turbo
+
+# Ignore environment variables file
+.env

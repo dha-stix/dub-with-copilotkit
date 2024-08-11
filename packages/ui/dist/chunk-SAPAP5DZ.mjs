@@ -1,0 +1,2 @@
+"use client"
+import{a as t}from"./chunk-JO2W5DZN.mjs";import{AnimatePresence as u}from"framer-motion";import n from"js-cookie";import{createContext as P,useState as c}from"react";import{jsx as e}from"react/jsx-runtime";var m=P({hidePopup:()=>{}});function h({children:r,hiddenCookieId:o}){let[i,p]=c(n.get(o)==="1"),d=()=>{p(!0),n.set(o,"1")};return e(t,{children:e(m.Provider,{value:{hidePopup:d},children:e(u,{children:!i&&r})})})}export{m as a,h as b};

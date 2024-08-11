@@ -1,0 +1,2 @@
+"use client"
+import{i as n}from"./chunk-DGDXBKHW.mjs";import g from"next/image";import{useEffect as i,useState as r}from"react";import{jsx as u}from"react/jsx-runtime";function v(t){let[o,c]=r(!0),[l,e]=r(t.src);i(()=>e(t.src),[t.src]);let m=s=>{c(!1);let a=s.target;a.naturalWidth<=16&&a.naturalHeight<=16&&e(`https://avatar.vercel.sh/${encodeURIComponent(t.alt)}`)};return u(g,{...t,src:l,alt:t.alt,className:n(o?"blur-[2px]":"blur-0",t.className),onLoad:m,onError:()=>{e(`https://avatar.vercel.sh/${encodeURIComponent(t.alt)}`)},unoptimized:!0})}export{v as a};

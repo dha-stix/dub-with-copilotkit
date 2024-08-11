@@ -1,0 +1,1 @@
+var s=(e,t)=>{if(e===t)return!0;if(typeof e!="object"||typeof t!="object"||e===null||t===null)return!1;let r=Object.keys(e),l=Object.keys(t);if(r.length!==l.length)return!1;for(let n of r)if(!l.includes(n)||!s(e[n],t[n]))return!1;return!0};export{s as a};

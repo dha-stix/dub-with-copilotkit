@@ -1,0 +1,1 @@
+function c(r,i,u=5e3){return new Promise((s,t)=>{let o=new AbortController,n=setTimeout(()=>{o.abort(),t(new Error("Request timed out"))},u);fetch(r,{...i,signal:o.signal}).then(e=>{clearTimeout(n),s(e)}).catch(e=>{clearTimeout(n),t(e)})})}export{c as a};

@@ -1,0 +1,2 @@
+"use client"
+import{jsx as o,jsxs as n}from"react/jsx-runtime";function e(r){return o("svg",{viewBox:"0 0 18 18",xmlns:"http://www.w3.org/2000/svg",...r,children:n("g",{fill:"currentColor",children:[o("path",{d:"M3.75,3.25H13.25c.552,0,1,.448,1,1v5c0,.552-.448,1-1,1H3.75",fill:"none",stroke:"currentColor",strokeLinecap:"round",strokeLinejoin:"round",strokeWidth:"1.5"}),o("line",{fill:"none",stroke:"currentColor",strokeLinecap:"round",strokeLinejoin:"round",strokeWidth:"1.5",x1:"3.75",x2:"3.75",y1:"1.75",y2:"16.25"})]})})}export{e as a};

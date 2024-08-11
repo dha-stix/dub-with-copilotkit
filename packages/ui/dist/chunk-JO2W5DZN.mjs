@@ -1,0 +1,2 @@
+"use client"
+import{AnimatePresence as s,motion as m}from"framer-motion";import{useEffect as r,useState as d}from"react";import{jsx as t}from"react/jsx-runtime";var y=({children:a,fallback:n,fadeInDuration:e=.5,className:o})=>{let[i,c]=d(!1);r(()=>{c(!0)},[]);let l=e?m.div:"div";return t(s,{children:i?t(l,{...e?{initial:{opacity:0},animate:{opacity:1},transition:{duration:e}}:{},className:o,children:a}):n||null})};export{y as a};

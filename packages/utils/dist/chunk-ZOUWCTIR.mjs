@@ -1,0 +1,1 @@
+var c=async({url:n,requestDomain:a})=>{let r=await fetch(n,{headers:{"User-Agent":"Dub.co Bot"}}),t=r.headers.get("X-Frame-Options");if(t==="DENY"||t==="SAMEORIGIN")return!1;let s=r.headers.get("content-security-policy");if(!s)return!0;let e=s.match(/frame-ancestors\s+([\s\S]+?)(?=;|$)/i);return!!(e&&(e[1]==="*"||e[1].split(/\s+/).includes(a)))};export{c as a};

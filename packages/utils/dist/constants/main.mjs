@@ -1,0 +1,1 @@
+import{a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p}from"../chunk-AOG5JJD3.mjs";export{i as ADMIN_HOSTNAMES,h as API_DOMAIN,g as API_HOSTNAMES,e as APP_DOMAIN,f as APP_DOMAIN_WITH_NGROK,d as APP_HOSTNAMES,a as APP_NAME,j as DUB_LOGO,l as DUB_THUMBNAIL,k as DUB_WORDMARK,m as DUB_WORKSPACE_ID,c as HOME_DOMAIN,o as LEGAL_USER_ID,n as LEGAL_WORKSPACE_ID,p as R2_URL,b as SHORT_DOMAIN};
