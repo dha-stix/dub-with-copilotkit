@@ -130,6 +130,7 @@ export { Download } from './icons/nucleo/download.js';
 export { EarthPosition } from './icons/nucleo/earth-position.js';
 export { EyeSlash } from './icons/nucleo/eye-slash.js';
 export { FilterBars } from './icons/nucleo/filter-bars.js';
+export { Filter2 } from './icons/nucleo/filter2.js';
 export { FlagWavy } from './icons/nucleo/flag-wavy.js';
 export { Flag2 } from './icons/nucleo/flag2.js';
 export { GamingConsole } from './icons/nucleo/gaming-console.js';
@@ -227,6 +228,11 @@ declare function useEnterSubmit(formRef: React.RefObject<HTMLFormElement>): {
     handleKeyDown: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
 };
 
+/**
+ * Determines whether an <input> or <textarea> element is currently focused.
+ */
+declare function useInputFocused(): boolean;
+
 interface Args extends IntersectionObserverInit {
     freezeOnceVisible?: boolean;
 }
@@ -312,4 +318,4 @@ declare const RESOURCES: {
     href: string;
 }[];
 
-export { CUSTOMER_STORIES, CardList, DatePickerContext, FEATURES_LIST, Filter, PROFILES, RESOURCES, SDKS, useCookies, useCurrentAnchor, useEnterSubmit, useIntersectionObserver, useLocalStorage, useMediaQuery, useOptimisticUpdate, useResizeObserver, useRouterStuff, useScroll };
+export { CUSTOMER_STORIES, CardList, DatePickerContext, FEATURES_LIST, Filter, PROFILES, RESOURCES, SDKS, useCookies, useCurrentAnchor, useEnterSubmit, useInputFocused, useIntersectionObserver, useLocalStorage, useMediaQuery, useOptimisticUpdate, useResizeObserver, useRouterStuff, useScroll };

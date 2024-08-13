@@ -76,7 +76,6 @@ function WorkspaceLinks() {
             <h1 className="order-1 text-2xl font-semibold tracking-tight text-black">
               Links
             </h1>
-           
             <div className="order-4 flex w-full grow flex-wrap justify-end gap-2 md:order-2 md:w-auto">
               <div className="w-full md:w-56 lg:w-64">
                 <SearchBoxPersisted
@@ -156,7 +155,6 @@ function WorkspaceLinks() {
           />
         </MaxWidthWrapper>
       </div>
-      
       <div className="mt-3">
         <LinksContainer AddEditLinkButton={AddEditLinkButton} />
       </div>

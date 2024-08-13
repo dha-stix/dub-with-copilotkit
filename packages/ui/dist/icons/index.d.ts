@@ -67,6 +67,7 @@ export { Download } from './nucleo/download.js';
 export { EarthPosition } from './nucleo/earth-position.js';
 export { EyeSlash } from './nucleo/eye-slash.js';
 export { FilterBars } from './nucleo/filter-bars.js';
+export { Filter2 } from './nucleo/filter2.js';
 export { FlagWavy } from './nucleo/flag-wavy.js';
 export { Flag2 } from './nucleo/flag2.js';
 export { GamingConsole } from './nucleo/gaming-console.js';

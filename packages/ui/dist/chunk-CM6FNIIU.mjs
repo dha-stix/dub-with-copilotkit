@@ -1,0 +1,2 @@
+"use client"
+import{i as o}from"./chunk-USWPT2N2.mjs";import*as e from"@radix-ui/react-label";import{cva as m}from"class-variance-authority";import*as t from"react";import{jsx as s}from"react/jsx-runtime";var l=m("text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"),p=t.forwardRef(({className:a,...i},r)=>s(e.Root,{ref:r,className:o(l(),a),...i}));p.displayName=e.Root.displayName;export{p as a};

@@ -21,7 +21,8 @@ import { mutate } from "swr";
 import { useTransferLinkModal } from "../modals/transfer-link-modal";
 import { ThreeDots } from "../shared/icons";
 import { LinksListContext, ResponseLink } from "./links-container";
-import { useCopilotAction } from "@copilotkit/react-core";
+import { useCopilotAction } from "@copilotkit/react-core"
+
 
 export function LinkControls({ link }: { link: ResponseLink }) {
   const { slug } = useParams() as { slug?: string };
@@ -150,6 +151,7 @@ export function LinkControls({ link }: { link: ResponseLink }) {
       setShowAddEditLinkModal(true);
     },
   });
+
 
   return (
     <div className="flex justify-end">

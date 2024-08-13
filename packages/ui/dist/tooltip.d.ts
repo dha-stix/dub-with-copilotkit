@@ -37,7 +37,7 @@ declare function NumberTooltip({ value, unit, prefix, children, lastClicked, }: 
     prefix?: string;
     children: ReactNode;
     lastClicked?: Date | null;
-}): string | number | boolean | Iterable<ReactNode> | react.PromiseLikeOfReactNode | react_jsx_runtime.JSX.Element | null | undefined;
+}): string | number | boolean | react_jsx_runtime.JSX.Element | Iterable<ReactNode> | react.PromiseLikeOfReactNode | null | undefined;
 declare function BadgeTooltip({ children, content, ...props }: TooltipProps): react_jsx_runtime.JSX.Element;
 declare function ButtonTooltip({ tooltipContent, children, ...props }: {
     tooltipContent: ReactNode | string;
