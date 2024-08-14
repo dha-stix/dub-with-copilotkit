@@ -16,7 +16,6 @@ import posthog from "posthog-js";
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { mutate } from "swr";
-import { useDebounce } from "use-debounce";
 
 export default function TagsSection({
   data,
@@ -26,70 +25,18 @@ export default function TagsSection({
   setData: Dispatch<SetStateAction<LinkWithTagsProps>>;
 }) {
   const { tags: availableTags } = useTags();
-  const { id: linkId, url, title, description, tags } = data;
+  const { url, tags } = data;
 
   const [inputValue, setInputValue] = useState("");
 
   const {
     id: workspaceId,
-    exceededAI,
-    mutate: mutateWorkspace,
   } = useWorkspace();
 
   const [suggestedTags, setSuggestedTags] = useState<TagProps[]>([]);
   const tagMatch = availableTags
     ?.map(({ name }) => name)
     .includes(inputValue.trim());
-
-  const { complete } = useCompletion({
-    api: `/api/ai/completion?workspaceId=${workspaceId}`,
-    body: {
-      model: "claude-3-haiku-20240307",
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-    onFinish: (_, completion) => {
-      mutateWorkspace();
-      if (completion) {
-        const completionArr = completion.split(", ");
-        const suggestedTags = completionArr
-          .map((tag: string) => {
-            return availableTags?.find(({ name }) => name === tag) || null;
-          })
-          .filter(Boolean);
-        setSuggestedTags(suggestedTags as TagProps[]);
-      }
-    },
-  });
-
-  const [debouncedUrl] = useDebounce(url, 500);
-
-  useEffect(() => {
-    if (
-      !linkId &&
-      debouncedUrl &&
-      title &&
-      description &&
-      !exceededAI &&
-      tags.length === 0 &&
-      suggestedTags.length === 0 &&
-      availableTags &&
-      availableTags.length > 0
-    ) {
-      complete(
-        `From the list of avaialble tags below, suggest relevant tags for this link: 
-        
-        - URL: ${debouncedUrl}
-        - Meta title: ${title}
-        - Meta description: ${description}. 
-        
-        Only return the tag names in comma-separated format, and nothing else. If there are no relevant tags, return an empty string.
-        
-        Available tags: ${availableTags.map(({ name }) => name).join(", ")}`,
-      );
-    }
-  }, [debouncedUrl, title, description]);
 
   const [creatingTag, setCreatingTag] = useState(false);
 

@@ -12,7 +12,6 @@ import {
   LinkLogo,
   LinkedIn,
   LoadingCircle,
-  Magic,
   Modal,
   SimpleTooltipContent,
   Tooltip,
@@ -36,12 +35,11 @@ import {
   punycode,
   truncate,
 } from "@dub/utils";
-import { useCompletion } from "ai/react";
 import { TriangleAlert } from "lucide-react";
 import { useParams, useSearchParams } from "next/navigation";
-import posthog from "posthog-js";
 import {
   Dispatch,
+  FC,
   SetStateAction,
   UIEvent,
   useCallback,
@@ -66,19 +64,9 @@ import PasswordSection from "./password-section";
 import Preview from "./preview";
 import TagsSection from "./tags-section";
 import UTMSection from "./utm-section";
-import { useCopilotReadable, useCopilotAction } from "@copilotkit/react-core";
+import {  useCopilotAction } from "@copilotkit/react-core";
 
-function AddEditLinkModal({
- showAddEditLinkModal,
-  setShowAddEditLinkModal,
-  props,
-  generatingRandomKey,
-  keyError,
-  setGeneratingRandomKey,
-  setKeyError,
-  duplicateProps,
-  homepageDemo,
-}: {
+type AddEditLinkModalProps = {
   showAddEditLinkModal: boolean;
   setShowAddEditLinkModal: Dispatch<SetStateAction<boolean>>;
   props?: LinkWithTagsProps;
@@ -88,11 +76,22 @@ function AddEditLinkModal({
   setKeyError: Dispatch<SetStateAction<string | null>>;
   duplicateProps?: LinkWithTagsProps;
   homepageDemo?: boolean;
-}) {
+};
+
+const AddEditLinkModal: FC<AddEditLinkModalProps> = ({
+  showAddEditLinkModal,
+  setShowAddEditLinkModal,
+  props,
+  generatingRandomKey,
+  keyError,
+  setGeneratingRandomKey,
+  setKeyError,
+  duplicateProps,
+  homepageDemo,
+}) => {
   const params = useParams() as { slug?: string };
   const { slug } = params;
   const { id: workspaceId, nextPlan, flags } = useWorkspace();
-
   const [urlError, setUrlError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -120,23 +119,11 @@ function AddEditLinkModal({
     props || duplicateProps || DEFAULT_LINK_PROPS,
   );
 
-  useEffect(() => {
-    // for a new link (no props or duplicateProps), set the domain to the primary domain
-    if (!loading && primaryDomain && !props && !duplicateProps) {
-      setData((prev) => ({
-        ...prev,
-        domain: primaryDomain,
-      }));
-    }
-  }, [loading, primaryDomain, props, duplicateProps]);
-
-  const { domain, key, url, password, proxy } = data;
-
   const generateRandomKey = async () => {
     setKeyError(null);
     setGeneratingRandomKey(true);
     const res = await fetch(
-      `/api/links/random?domain=${domain}&workspaceId=${workspaceId}`,
+      `/api/links/random?domain=${primaryDomain}&workspaceId=${workspaceId}`,
     );
     const key = await res.json();
     setData((prev) => ({ ...prev, key }));
@@ -145,7 +132,7 @@ function AddEditLinkModal({
 
   const runKeyChecks = async (value: string) => {
     const res = await fetch(
-      `/api/links/verify?domain=${domain}&key=${value}&workspaceId=${workspaceId}`,
+      `/api/links/verify?domain=${data.domain}&key=${value}&workspaceId=${workspaceId}`,
     );
     const { error } = await res.json();
     if (error) {
@@ -155,18 +142,15 @@ function AddEditLinkModal({
     }
   };
 
-  const [generatedKeys, setGeneratedKeys] = useState<string[]>(
-    props ? [props.key] : [],
-  );
-
   const [generatingMetatags, setGeneratingMetatags] = useState(
     props ? true : false,
   );
-  const [debouncedUrl] = useDebounce(getUrlWithoutUTMParams(url), 500);
+
+  const [debouncedUrl] = useDebounce(getUrlWithoutUTMParams(data.url), 500);
 
   useEffect(() => {
     // if there's a password, no need to generate metatags
-    if (password) {
+    if (data.password) {
       setGeneratingMetatags(false);
       setData((prev) => ({
         ...prev,
@@ -183,7 +167,7 @@ function AddEditLinkModal({
      * - custom OG proxy is not enabled
      * - url is not empty
      **/
-    if (showAddEditLinkModal && !proxy && debouncedUrl.length > 0) {
+    if (showAddEditLinkModal && !data.proxy && debouncedUrl.length > 0) {
       setData((prev) => ({
         ...prev,
         title: null,
@@ -213,7 +197,7 @@ function AddEditLinkModal({
     } else {
       setGeneratingMetatags(false);
     }
-  }, [debouncedUrl, password, showAddEditLinkModal]);
+  }, [debouncedUrl, data.password, showAddEditLinkModal]);
 
   const endpoint = useMemo(() => {
     if (props?.id) {
@@ -227,9 +211,10 @@ function AddEditLinkModal({
         url: `/api/links?workspaceId=${workspaceId}`,
       };
     }
-  }, [props, slug, domain, workspaceId]);
+  }, [props, slug, data.domain, workspaceId]);
 
   const [atBottom, setAtBottom] = useState(false);
+
   const handleScroll = useCallback((event: UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
     if (Math.abs(scrollHeight - scrollTop - clientHeight) < 5) {
@@ -258,7 +243,7 @@ function AddEditLinkModal({
           // If the key is "title" or "description" and proxy is not enabled, return true (skip the check)
           if (
             (key === "title" || key === "description" || key === "image") &&
-            !proxy
+            !data.proxy
           ) {
             return true;
           } else if (key === "geo") {
@@ -266,7 +251,7 @@ function AddEditLinkModal({
             return equalGeo;
           }
           // Otherwise, check for discrepancy in the current key-value pair
-          return data[key] === value;
+          // return data[key] === value;
         }))
     ) {
       return true;
@@ -280,8 +265,9 @@ function AddEditLinkModal({
   const [lockKey, setLockKey] = useState(true);
 
   const keyRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
-    if (key?.endsWith("-copy")) {
+    if (data.key?.endsWith("-copy")) {
       keyRef.current?.select();
     }
   }, []);
@@ -300,6 +286,74 @@ function AddEditLinkModal({
   }, [data.key, data.domain]);
 
   const randomLinkedInNonce = useMemo(() => nanoid(8), []);
+
+  const updateFormData = (key: string, value: string) => {
+    setData({ ...data, [key]: value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    // @ts-ignore – exclude extra attributes from `data` object before sending to API
+    const { user, tags, tagId, ...rest } = data;
+    const bodyData = {
+      ...rest,
+      // Map tags to tagIds
+      tagIds: tags.map(({ id }) => id),
+    };
+    fetch(endpoint.url, {
+      method: endpoint.method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(bodyData),
+    }).then(async (res) => {
+      if (res.status === 200) {
+        await mutate(
+          (key) => typeof key === "string" && key.startsWith("/api/links"),
+          undefined,
+          { revalidate: true },
+        );
+        const data = await res.json();
+        // copy shortlink to clipboard when adding a new link
+
+        try {
+          await navigator.clipboard.writeText(data.shortLink);
+          toast.success("Copied shortlink to clipboard!");
+        } catch (e) {
+          console.error(
+            "Failed to automatically copy shortlink to clipboard.",
+            e,
+          );
+          toast.success("Successfully created link!");
+        }
+
+        setShowAddEditLinkModal(false);
+      } else {
+        const { error } = await res.json();
+        if (error) {
+          if (error.message.includes("Upgrade to")) {
+            toast.custom(() => (
+              <UpgradeRequiredToast
+                title={`You've discovered a ${nextPlan.name} feature!`}
+                message={error.message}
+              />
+            ));
+          } else {
+            toast.error(error.message);
+          }
+          const message = error.message.toLowerCase();
+
+          if (message.includes("key")) {
+            setKeyError(error.message);
+          } else if (message.includes("url")) {
+            setUrlError(error.message);
+          }
+        }
+      }
+      setSaving(false);
+    });
+  };
 
   return (
     <Modal
@@ -343,79 +397,7 @@ function AddEditLinkModal({
             </h3>
           </div>
 
-          <form
-            onSubmit={async (e) => {
-              e.preventDefault();
-              setSaving(true);
-              // @ts-ignore – exclude extra attributes from `data` object before sending to API
-              const { user, tags, tagId, ...rest } = data;
-              const bodyData = {
-                ...rest,
-                // Map tags to tagIds
-                tagIds: tags.map(({ id }) => id),
-              };
-              fetch(endpoint.url, {
-                method: endpoint.method,
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(bodyData),
-              }).then(async (res) => {
-                if (res.status === 200) {
-                  await mutate(
-                    (key) =>
-                      typeof key === "string" && key.startsWith("/api/links"),
-                    undefined,
-                    { revalidate: true },
-                  );
-                  const data = await res.json();
-                  posthog.capture(
-                    props ? "link_updated" : "link_created",
-                    data,
-                  );
-                  // copy shortlink to clipboard when adding a new link
-                  if (!props) {
-                    try {
-                      await navigator.clipboard.writeText(data.shortLink);
-                      toast.success("Copied shortlink to clipboard!");
-                    } catch (e) {
-                      console.error(
-                        "Failed to automatically copy shortlink to clipboard.",
-                        e,
-                      );
-                      toast.success("Successfully created link!");
-                    }
-                  } else {
-                    toast.success("Successfully updated shortlink!");
-                  }
-                  setShowAddEditLinkModal(false);
-                } else {
-                  const { error } = await res.json();
-                  if (error) {
-                    if (error.message.includes("Upgrade to")) {
-                      toast.custom(() => (
-                        <UpgradeRequiredToast
-                          title={`You've discovered a ${nextPlan.name} feature!`}
-                          message={error.message}
-                        />
-                      ));
-                    } else {
-                      toast.error(error.message);
-                    }
-                    const message = error.message.toLowerCase();
-
-                    if (message.includes("key")) {
-                      setKeyError(error.message);
-                    } else if (message.includes("url")) {
-                      setUrlError(error.message);
-                    }
-                  }
-                }
-                setSaving(false);
-              });
-            }}
-            className="grid gap-6 bg-gray-50 pt-8"
-          >
+          <form onSubmit={handleSubmit} className="grid gap-6 bg-gray-50 pt-8">
             <div className="grid gap-6 px-4 md:px-16">
               <div>
                 <div className="flex items-center justify-between">
@@ -426,7 +408,7 @@ function AddEditLinkModal({
                     >
                       Destination URL
                     </label>
-                    {key === "_root" ? (
+                    {data.key === "_root" ? (
                       <ProBadgeTooltip
                         content={
                           <SimpleTooltipContent
@@ -452,22 +434,17 @@ function AddEditLinkModal({
                     press <strong>Enter</strong> ↵ to submit
                   </div>
                 </div>
+                {/** --- URL */}
                 <div className="relative mt-2 flex rounded-md shadow-sm">
                   <input
                     name="url"
                     id={`url-${randomIdx}`}
-                    required={key !== "_root"}
-                    placeholder={
-                      domains?.find(({ slug }) => slug === domain)
-                        ?.placeholder ||
-                      "https://dub.co/help/article/what-is-dub"
-                    }
-                    value={url}
-                    autoFocus={!key && !isMobile}
-                    autoComplete="off"
+                    required={data.key !== "_root"}
+                    value={data.url}
+                    autoFocus={!data.key && !isMobile}
                     onChange={(e) => {
                       setUrlError(null);
-                      setData({ ...data, url: e.target.value });
+                      updateFormData("url", e.target.value);
                     }}
                     className={`${
                       urlError
@@ -492,7 +469,7 @@ function AddEditLinkModal({
                 )}
               </div>
 
-              {key !== "_root" && (
+              {data.key !== "_root" && (
                 <div>
                   <div className="flex items-center justify-between">
                     <label
@@ -532,14 +509,15 @@ function AddEditLinkModal({
                     )}
                   </div>
                   <div className="relative mt-1 flex rounded-md shadow-sm">
+                    {/** --- Domain */}
                     <div>
                       <select
                         tabIndex={-1}
                         disabled={props && lockKey}
-                        value={domain}
+                        value={data.domain}
                         onChange={(e) => {
                           setKeyError(null);
-                          setData({ ...data, domain: e.target.value });
+                          updateFormData("domain", e.target.value);
                         }}
                         className={cn(
                           "max-w-[12rem] rounded-l-md border border-r-0 border-gray-300 bg-gray-50 pl-4 pr-8 text-gray-500 focus:border-gray-300 focus:outline-none focus:ring-0 sm:text-sm",
@@ -554,6 +532,7 @@ function AddEditLinkModal({
                         ))}
                       </select>
                     </div>
+                    {/** --- Key */}
                     <input
                       ref={keyRef}
                       type="text"
@@ -571,9 +550,9 @@ function AddEditLinkModal({
                         if (e.target.value && props?.key !== e.target.value) {
                           runKeyChecks(e.target.value);
                         } else if (
-                          domain &&
+                          data.domain &&
                           workspaceId &&
-                          url.length > 0 &&
+                          data.url.length > 0 &&
                           !saving
                         ) {
                           generateRandomKey();
@@ -593,14 +572,11 @@ function AddEditLinkModal({
                         },
                       )}
                       placeholder="(optional)"
-                      value={punycode(key)}
+                      value={punycode(data.key)}
                       onChange={(e) => {
                         setKeyError(null);
                         e.currentTarget.setCustomValidity("");
-                        setData({
-                          ...data,
-                          key: e.target.value.replace(" ", "-"),
-                        });
+                        updateFormData("key", e.target.value.replace(" ", "-"));
                       }}
                       aria-invalid="true"
                       aria-describedby="key-error"
@@ -715,6 +691,7 @@ function AddEditLinkModal({
               <CommentsSection {...{ props, data, setData }} />
             </div>
 
+            {/** Save button */}
             <div
               className={`${
                 atBottom ? "" : "md:shadow-[0_-20px_30px_-10px_rgba(0,0,0,0.1)]"
@@ -745,7 +722,7 @@ function AddEditLinkModal({
       </div>
     </Modal>
   );
-}
+};
 
 function DefaultDomainPrompt({
   data,
@@ -794,7 +771,6 @@ function AddEditLinkButton({
     // - there is no existing modal backdrop (i.e. no other modal is open)
     // - workspace has not exceeded links limit
     if (
-      e.key.toLowerCase() === "c" &&
       !e.metaKey &&
       !e.ctrlKey &&
       target.tagName !== "INPUT" &&
@@ -874,11 +850,12 @@ export function useAddEditLinkModal({
 } = {}) {
   const [showAddEditLinkModal, setShowAddEditLinkModal] = useState(false);
   const [updatedProps, setUpdatedProps] = useState(props || DEFAULT_LINK_PROPS);
-  const [keyError, setKeyError] = useState<string | null>(null);
-  const { primaryDomain } = useDomains();
 
+  
   const [generatingRandomKey, setGeneratingRandomKey] = useState(false);
+  const [keyError, setKeyError] = useState<string | null>(null);
   const { id: workspaceId } = useWorkspace();
+  const { primaryDomain } = useDomains();
 
   const getKey = async (domain: string) => {
     setKeyError(null);
@@ -889,12 +866,6 @@ export function useAddEditLinkModal({
     const key = await res.json();
     return key;
   };
-
-  useCopilotReadable({
-    description:
-      "Create a short link by entering the destination URL and a custom key. You can also generate a random key or use AI to generate a key. Other optional settings include adding tags, UTM parameters, and more.",
-    value: updatedProps,
-  });
 
   useCopilotAction({
     name: "createNewLink",
@@ -923,7 +894,7 @@ export function useAddEditLinkModal({
     },
   });
 
-const AddEditLinkModalCallback = useCallback(() => {
+  const AddEditLinkModalCallback = useCallback(() => {
     return (
       <AddEditLinkModal
         showAddEditLinkModal={showAddEditLinkModal}

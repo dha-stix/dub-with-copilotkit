@@ -1,2 +1,2 @@
 "use client"
-import{a}from"./chunk-WNWCIVVE.mjs";import"./chunk-USWPT2N2.mjs";import"./chunk-AUBFB4SI.mjs";export{a as MaxWidthWrapper};
+import{a}from"./chunk-MKKDA6BN.mjs";import"./chunk-PTW2A7PR.mjs";import"./chunk-AUBFB4SI.mjs";export{a as MaxWidthWrapper};

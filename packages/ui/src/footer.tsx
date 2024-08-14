@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  ALL_TOOLS,
-  COMPARE_PAGES,
-  LEGAL_PAGES,
-  cn,
-  createHref,
-  fetcher,
-} from "@dub/utils";
+import { ALL_TOOLS, COMPARE_PAGES, cn, createHref, fetcher } from "@dub/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -36,10 +29,11 @@ const navigation = {
     name,
     href: `/compare/${slug}`,
   })),
-  legal: LEGAL_PAGES.map(({ name, slug }) => ({
-    name,
-    href: `/legal/${slug}`,
-  })),
+  legal: [
+    { name: "Privacy", href: "/privacy" },
+    { name: "Terms", href: "/terms" },
+    { name: "Abuse", href: "/abuse" },
+  ],
   tools: ALL_TOOLS.map(({ name, slug }) => ({
     name,
     href: `/tools/${slug}`,

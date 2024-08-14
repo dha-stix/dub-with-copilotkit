@@ -24,6 +24,7 @@ function DeleteLinkModal({
   const { id } = useWorkspace();
   const [deleting, setDeleting] = useState(false);
   const apexDomain = getApexDomain(props.url);
+  
 
   const { key, domain } = props;
 

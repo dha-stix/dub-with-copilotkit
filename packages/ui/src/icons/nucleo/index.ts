@@ -28,7 +28,6 @@ export * from "./download";
 export * from "./earth-position";
 export * from "./eye-slash";
 export * from "./filter-bars";
-export * from "./filter2";
 export * from "./flag-wavy";
 export * from "./flag2";
 export * from "./gaming-console";

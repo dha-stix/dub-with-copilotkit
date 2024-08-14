@@ -1,2 +1,0 @@
-"use client"
-import{a as t}from"./chunk-KP36KR7A.mjs";import{a as o}from"./chunk-QC6GZ7KR.mjs";import{i as s,p as m}from"./chunk-USWPT2N2.mjs";import{jsx as e}from"react/jsx-runtime";function n({apexDomain:r,className:l}){return r?e(t,{src:`${m}${r}`,alt:r,className:s("h-8 w-8 rounded-full sm:h-10 sm:w-10",l),width:20,height:20,draggable:!1}):e("div",{className:s("flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 px-0 sm:h-10 sm:w-10",l),children:e(o,{className:"h-4 w-4 text-gray-600 sm:h-5 sm:w-5"})})}export{n as a};

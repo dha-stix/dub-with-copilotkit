@@ -1,2 +1,0 @@
-"use client"
-import{i as n}from"./chunk-USWPT2N2.mjs";import{motion as t}from"framer-motion";import{jsx as e}from"react/jsx-runtime";function s({value:i=0,max:r=100,className:o}){return e("div",{className:n("h-3 w-full overflow-hidden rounded-full bg-gray-200",o),children:e(t.div,{initial:{width:0},animate:{width:i&&r?i/r*100+"%":"0%"},transition:{duration:.5,type:"spring",delay:.2},className:`${i&&r&&i>r?"bg-red-500":"bg-blue-500"} h-full`})})}export{s as a};

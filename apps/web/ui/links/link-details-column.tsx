@@ -23,7 +23,12 @@ import {
 import { LinkControls } from "./link-controls";
 import { ResponseLink } from "./links-container";
 import { LinksDisplayContext } from "./links-display-provider";
+import { Dispatch, SetStateAction } from "react";
 import TagBadge from "./tag-badge";
+
+interface Props { 
+  link: ResponseLink;
+}
 
 function useOrganizedTags(tags: ResponseLink["tags"]) {
   const searchParams = useSearchParams();
@@ -50,7 +55,7 @@ function useOrganizedTags(tags: ResponseLink["tags"]) {
   return { primaryTag, additionalTags };
 }
 
-export function LinkDetailsColumn({ link }: { link: ResponseLink }) {
+export function LinkDetailsColumn({ link }: Props) {
   const { tags } = link;
 
   const { displayProperties } = useContext(LinksDisplayContext);

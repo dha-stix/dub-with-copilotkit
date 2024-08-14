@@ -1,5 +1,5 @@
 import { Link } from "@prisma/client";
-import { afterAll, expect, test } from "vitest";
+import { expect, test } from "vitest";
 import { IntegrationHarness } from "../utils/integration";
 import { link } from "../utils/resource";
 
@@ -24,9 +24,7 @@ test("GET /links/count", async (ctx) => {
   expect(count).toBeDefined();
   expect(count).greaterThanOrEqual(1);
 
-  afterAll(async () => {
-    await h.deleteLink(firstLink.id);
-  });
+  await h.deleteLink(firstLink.id);
 
   // TODO:
   // Assert actual value of count

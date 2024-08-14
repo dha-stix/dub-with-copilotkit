@@ -10,13 +10,15 @@ declare const AnimatedSizeContainer: react.ForwardRefExoticComponent<{
 } & {
     children?: react.ReactNode;
 } & Omit<Omit<{
-    className?: string | undefined;
+    slot?: string | undefined;
+    title?: string | undefined;
     defaultChecked?: boolean | undefined;
     defaultValue?: string | number | readonly string[] | undefined;
     suppressContentEditableWarning?: boolean | undefined;
     suppressHydrationWarning?: boolean | undefined;
     accessKey?: string | undefined;
     autoFocus?: boolean | undefined;
+    className?: string | undefined;
     contentEditable?: (boolean | "true" | "false") | "inherit" | "plaintext-only" | undefined;
     contextMenu?: string | undefined;
     dir?: string | undefined;
@@ -25,10 +27,8 @@ declare const AnimatedSizeContainer: react.ForwardRefExoticComponent<{
     id?: string | undefined;
     lang?: string | undefined;
     nonce?: string | undefined;
-    slot?: string | undefined;
     spellCheck?: (boolean | "true" | "false") | undefined;
     tabIndex?: number | undefined;
-    title?: string | undefined;
     translate?: "yes" | "no" | undefined;
     radioGroup?: string | undefined;
     role?: react.AriaRole | undefined;
@@ -55,7 +55,7 @@ declare const AnimatedSizeContainer: react.ForwardRefExoticComponent<{
     results?: number | undefined;
     security?: string | undefined;
     unselectable?: "on" | "off" | undefined;
-    inputMode?: "search" | "none" | "text" | "tel" | "url" | "email" | "numeric" | "decimal" | undefined;
+    inputMode?: "search" | "text" | "none" | "tel" | "url" | "email" | "numeric" | "decimal" | undefined;
     is?: string | undefined;
     tw?: string | undefined;
     "aria-activedescendant"?: string | undefined;
@@ -70,7 +70,7 @@ declare const AnimatedSizeContainer: react.ForwardRefExoticComponent<{
     "aria-colindextext"?: string | undefined;
     "aria-colspan"?: number | undefined;
     "aria-controls"?: string | undefined;
-    "aria-current"?: boolean | "true" | "false" | "time" | "page" | "step" | "location" | "date" | undefined;
+    "aria-current"?: boolean | "time" | "true" | "false" | "page" | "step" | "location" | "date" | undefined;
     "aria-describedby"?: string | undefined;
     "aria-description"?: string | undefined;
     "aria-details"?: string | undefined;
@@ -80,7 +80,7 @@ declare const AnimatedSizeContainer: react.ForwardRefExoticComponent<{
     "aria-expanded"?: (boolean | "true" | "false") | undefined;
     "aria-flowto"?: string | undefined;
     "aria-grabbed"?: (boolean | "true" | "false") | undefined;
-    "aria-haspopup"?: boolean | "true" | "false" | "dialog" | "grid" | "listbox" | "menu" | "tree" | undefined;
+    "aria-haspopup"?: boolean | "dialog" | "menu" | "true" | "false" | "grid" | "listbox" | "tree" | undefined;
     "aria-hidden"?: (boolean | "true" | "false") | undefined;
     "aria-invalid"?: boolean | "true" | "false" | "grammar" | "spelling" | undefined;
     "aria-keyshortcuts"?: string | undefined;
@@ -272,6 +272,6 @@ declare const AnimatedSizeContainer: react.ForwardRefExoticComponent<{
     onAnimationIterationCapture?: react.AnimationEventHandler<HTMLDivElement> | undefined;
     onTransitionEnd?: react.TransitionEventHandler<HTMLDivElement> | undefined;
     onTransitionEndCapture?: react.TransitionEventHandler<HTMLDivElement> | undefined;
-} & framer_motion.MotionProps & react.RefAttributes<HTMLDivElement>, "ref">, "children" | "animate"> & react.RefAttributes<HTMLDivElement>>;
+} & framer_motion.MotionProps & react.RefAttributes<HTMLDivElement>, "ref">, "animate" | "children"> & react.RefAttributes<HTMLDivElement>>;
 
 export { AnimatedSizeContainer };

@@ -3,12 +3,7 @@
 import useLinks from "@/lib/swr/use-links";
 import useLinksCount from "@/lib/swr/use-links-count";
 import { LinkWithTagsProps, UserProps } from "@/lib/types";
-import {
-  CardList,
-  MaxWidthWrapper,
-  useInputFocused,
-  useRouterStuff,
-} from "@dub/ui";
+import { CardList, MaxWidthWrapper, useRouterStuff } from "@dub/ui";
 import { LoadingSpinner } from "@dub/ui/src/icons";
 import { useSearchParams } from "next/navigation";
 import {
@@ -16,6 +11,7 @@ import {
   SetStateAction,
   createContext,
   useContext,
+  useEffect,
   useState,
 } from "react";
 import ArchivedLinksHint from "./archived-links-hint";
@@ -24,6 +20,19 @@ import LinkCardPlaceholder from "./link-card-placeholder";
 import LinkNotFound from "./link-not-found";
 import { LinksDisplayContext } from "./links-display-provider";
 import NoLinksPlaceholder from "./no-links-placeholder";
+//👇🏻 additions/changes
+import { useCopilotReadable, useCopilotAction } from "@copilotkit/react-core"
+import { useAddEditLinkModal } from "@/ui/modals/add-edit-link-modal";
+import { useDeleteLinkModal } from "@/ui/modals/delete-link-modal";
+
+export const LinksListContext = createContext<{
+  openMenuLinkId: string | null;
+  setOpenMenuLinkId: Dispatch<SetStateAction<string | null>>;
+}>({
+  openMenuLinkId: null,
+  setOpenMenuLinkId: () => {},
+});
+
 
 export type ResponseLink = LinkWithTagsProps & {
   user: UserProps;
@@ -37,7 +46,46 @@ export default function LinksContainer({
   const { viewMode, sort, showArchived } = useContext(LinksDisplayContext);
 
   const { links, isValidating } = useLinks({ sort, showArchived });
+  const [updatedLinks, setUpdatedLinks] = useState<ResponseLink[]>(links || []);
+  const [selectedLink, setSelectedLink] = useState<ResponseLink>(links?.[0]!);
+
+   const { setShowDeleteLinkModal, DeleteLinkModal} = useDeleteLinkModal({
+    props: selectedLink!,
+   });
+
+  useEffect(() => {
+    setUpdatedLinks(links || []);
+  }, [links]);
+
+
   const { data: count } = useLinksCount({ showArchived });
+
+  useCopilotReadable({
+    description:
+      "This is the list of links you have saved. You can click on a link to view it, or use the search bar to find a specific link.",
+    value: updatedLinks,
+  });
+
+   useCopilotAction({
+    name: "deleteShortLink",
+    description: "delete a link from the database via its ID",
+    parameters: [
+      {
+        name: "id",
+        type: "string",
+        description: "The ID of a short link",
+        required: true,
+      },
+    ],
+    render: "Deleting link...",
+    handler: async ({ id }) => {
+      if (!id) return;
+      const link = updatedLinks?.find((link) => link.id === id) 
+      if (!link) return;
+      setSelectedLink(link)
+      setShowDeleteLinkModal(true);
+    },
+  });
 
   return (
     <MaxWidthWrapper className="grid gap-y-2">
@@ -48,19 +96,12 @@ export default function LinksContainer({
         loading={isValidating}
         compact={viewMode === "rows"}
       />
+      <DeleteLinkModal />
     </MaxWidthWrapper>
   );
 }
 
-export const LinksListContext = createContext<{
-  openMenuLinkId: string | null;
-  setOpenMenuLinkId: Dispatch<SetStateAction<string | null>>;
-  showHoverStates: boolean;
-}>({
-  openMenuLinkId: null,
-  setOpenMenuLinkId: () => {},
-  showHoverStates: true,
-});
+
 
 function LinksList({
   AddEditLinkButton,
@@ -73,12 +114,11 @@ function LinksList({
   links?: ResponseLink[];
   count?: number;
   loading?: boolean;
-  compact: boolean;
+    compact: boolean;
+   
 }) {
   const { queryParams } = useRouterStuff();
   const searchParams = useSearchParams();
-  const showHoverStates = !useInputFocused();
-
   const page = (parseInt(searchParams?.get("page") || "1") || 1) - 1;
 
   const [openMenuLinkId, setOpenMenuLinkId] = useState<string | null>(null);
@@ -95,13 +135,13 @@ function LinksList({
     <>
       {!links || links.length ? (
         <LinksListContext.Provider
-          value={{ openMenuLinkId, setOpenMenuLinkId, showHoverStates }}
+          value={{ openMenuLinkId, setOpenMenuLinkId }}
         >
           {/* Cards */}
           <CardList variant={compact ? "compact" : "loose"} loading={loading}>
             {links?.length
               ? // Link cards
-                links.map((link) => <LinkCard key={link.id} link={link} />)
+              links.map((link) => <LinkCard key={link.id} link={link} />)
               : // Loading placeholder cards
                 Array.from({ length: 12 }).map((_, idx) => (
                   <CardList.Card

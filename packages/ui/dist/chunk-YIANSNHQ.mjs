@@ -1,0 +1,2 @@
+"use client"
+import{i as e}from"./chunk-DGDXBKHW.mjs";import{jsx as t}from"react/jsx-runtime";function o({className:i}){return t("div",{className:e("h-5 w-5",i),children:t("div",{style:{position:"relative",top:"50%",left:"50%"},className:e("loading-spinner","h-5 w-5",i),children:[...Array(12)].map((n,a)=>t("div",{style:{animationDelay:`${-1.2+.1*a}s`,background:"gray",position:"absolute",borderRadius:"1rem",width:"30%",height:"8%",left:"-10%",top:"-4%",transform:`rotate(${30*a}deg) translate(120%)`},className:"animate-spinner"},a))})})}export{o as a};

@@ -1,7 +1,7 @@
 import { LinkSchema } from "@/lib/zod/schemas/links";
 import { Link, Tag } from "@prisma/client";
 import { IntegrationHarnessOld } from "tests/utils/integration-old";
-import { afterAll, describe, expect, test } from "vitest";
+import { describe, expect, test } from "vitest";
 import { randomId } from "../utils/helpers";
 import { IntegrationHarness } from "../utils/integration";
 import { link } from "../utils/resource";
@@ -75,9 +75,7 @@ describe.sequential("POST /links", async () => {
     });
     expect(LinkSchema.strict().parse(link)).toBeTruthy();
 
-    afterAll(async () => {
-      await h.deleteLink(link.id);
-    });
+    await h.deleteLink(link.id);
   });
 
   test("user defined key", async () => {
@@ -106,9 +104,7 @@ describe.sequential("POST /links", async () => {
     });
     expect(LinkSchema.strict().parse(link)).toBeTruthy();
 
-    afterAll(async () => {
-      await h.deleteLink(link.id);
-    });
+    await h.deleteLink(link.id);
   });
 
   test("prefix", async () => {
@@ -140,9 +136,7 @@ describe.sequential("POST /links", async () => {
     });
     expect(LinkSchema.strict().parse(link)).toBeTruthy();
 
-    afterAll(async () => {
-      await h.deleteLink(link.id);
-    });
+    await h.deleteLink(link.id);
   });
 
   test("utm builder", async (ctx) => {
@@ -181,9 +175,7 @@ describe.sequential("POST /links", async () => {
     });
     expect(LinkSchema.strict().parse(link)).toBeTruthy();
 
-    afterAll(async () => {
-      await h.deleteLink(link.id);
-    });
+    await h.deleteLink(link.id);
   });
 
   test("password protection", async () => {
@@ -212,9 +204,7 @@ describe.sequential("POST /links", async () => {
     });
     expect(LinkSchema.strict().parse(link)).toBeTruthy();
 
-    afterAll(async () => {
-      await h.deleteLink(link.id);
-    });
+    await h.deleteLink(link.id);
   });
 
   test("link expiration", async () => {
@@ -246,9 +236,7 @@ describe.sequential("POST /links", async () => {
     });
     expect(LinkSchema.strict().parse(link)).toBeTruthy();
 
-    afterAll(async () => {
-      await h.deleteLink(link.id);
-    });
+    await h.deleteLink(link.id);
   });
 
   test("device targeting", async () => {
@@ -281,9 +269,7 @@ describe.sequential("POST /links", async () => {
     });
     expect(LinkSchema.strict().parse(link)).toBeTruthy();
 
-    afterAll(async () => {
-      await h.deleteLink(link.id);
-    });
+    await h.deleteLink(link.id);
   });
 
   test("geo targeting", async () => {
@@ -316,9 +302,7 @@ describe.sequential("POST /links", async () => {
     });
     expect(LinkSchema.strict().parse(link)).toBeTruthy();
 
-    afterAll(async () => {
-      await h.deleteLink(link.id);
-    });
+    await h.deleteLink(link.id);
   });
 
   test("tags", async () => {
@@ -369,12 +353,10 @@ describe.sequential("POST /links", async () => {
     });
     expect(LinkSchema.strict().parse(link)).toBeTruthy();
 
-    afterAll(async () => {
-      await Promise.all([
-        ...tagIds.map((id) => h.deleteTag(id)),
-        h.deleteLink(link.id),
-      ]);
-    });
+    await Promise.all([
+      ...tagIds.map((id) => h.deleteTag(id)),
+      h.deleteLink(link.id),
+    ]);
   });
 
   test("custom social media cards", async () => {
@@ -406,9 +388,7 @@ describe.sequential("POST /links", async () => {
     });
     expect(LinkSchema.strict().parse(link)).toBeTruthy();
 
-    afterAll(async () => {
-      await h.deleteLink(link.id);
-    });
+    await h.deleteLink(link.id);
   });
 });
 
@@ -440,8 +420,6 @@ describe.sequential("POST /links?workspaceId=xxx", async () => {
     });
     expect(LinkSchema.strict().parse(link)).toBeTruthy();
 
-    afterAll(async () => {
-      await h.deleteLink(link.id);
-    });
+    await h.deleteLink(link.id);
   });
 });

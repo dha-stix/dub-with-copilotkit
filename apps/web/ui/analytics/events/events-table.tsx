@@ -101,16 +101,12 @@ export default function EventsTable() {
               {getValue() ? (
                 <>
                   <QRCode className="size-4 shrink-0" />
-                  <span className="truncate" title="QR scan">
-                    QR scan
-                  </span>
+                  <span className="truncate">QR scan</span>
                 </>
               ) : (
                 <>
                   <CursorRays className="size-4 shrink-0" />
-                  <span className="truncate" title="Link click">
-                    Link click
-                  </span>
+                  <span className="truncate">Link click</span>
                 </>
               )}
             </div>
@@ -123,11 +119,7 @@ export default function EventsTable() {
           accessorKey: "event_name",
           enableHiding: false,
           cell: ({ getValue }) =>
-            (
-              <span className="truncate" title={getValue()}>
-                {getValue()}
-              </span>
-            ) || <span className="text-gray-400">-</span>,
+            getValue() || <span className="text-gray-400">-</span>,
         },
         // Sale invoice ID
         {
@@ -136,11 +128,7 @@ export default function EventsTable() {
           accessorKey: "invoice_id",
           maxSize: 200,
           cell: ({ getValue }) =>
-            (
-              <span className="truncate" title={getValue()}>
-                {getValue()}
-              </span>
-            ) || <span className="text-gray-400">-</span>,
+            getValue() || <span className="text-gray-400">-</span>,
         },
         {
           id: "link",
@@ -183,7 +171,7 @@ export default function EventsTable() {
           cell: ({ getValue }) => {
             const display = getValue().name || getValue().email || "Unknown";
             return (
-              <div className="flex items-center gap-3" title={display}>
+              <div className="flex items-center gap-3">
                 <img
                   alt={display}
                   src={getValue().avatar}
@@ -202,10 +190,7 @@ export default function EventsTable() {
             filterParams: ({ getValue }) => ({ continent: getValue() }),
           },
           cell: ({ getValue }) => (
-            <div
-              className="flex items-center gap-3"
-              title={CONTINENTS[getValue()] ?? "Unknown"}
-            >
+            <div className="flex items-center gap-3">
               <ContinentIcon display={getValue()} className="size-4 shrink-0" />
               <span className="truncate">
                 {CONTINENTS[getValue()] ?? "Unknown"}
@@ -221,10 +206,7 @@ export default function EventsTable() {
             filterParams: ({ getValue }) => ({ country: getValue() }),
           },
           cell: ({ getValue }) => (
-            <div
-              className="flex items-center gap-3"
-              title={COUNTRIES[getValue()] ?? getValue()}
-            >
+            <div className="flex items-center gap-3">
               {getValue() === "Unknown" ? (
                 <Globe className="size-4 shrink-0" />
               ) : (
@@ -246,7 +228,7 @@ export default function EventsTable() {
           accessorKey: "city",
           minSize: 160,
           cell: ({ getValue, row }) => (
-            <div className="flex items-center gap-3" title={getValue()}>
+            <div className="flex items-center gap-3">
               {row.original.country === "Unknown" ? (
                 <Globe className="size-4 shrink-0" />
               ) : (
@@ -268,7 +250,7 @@ export default function EventsTable() {
             filterParams: ({ getValue }) => ({ device: getValue() }),
           },
           cell: ({ getValue }) => (
-            <div className="flex items-center gap-3" title={getValue()}>
+            <div className="flex items-center gap-3">
               <DeviceIcon
                 display={capitalize(getValue()) ?? getValue()}
                 tab="devices"
@@ -283,7 +265,7 @@ export default function EventsTable() {
           header: "Browser",
           accessorKey: "browser",
           cell: ({ getValue }) => (
-            <div className="flex items-center gap-3" title={getValue()}>
+            <div className="flex items-center gap-3">
               <DeviceIcon
                 display={capitalize(getValue()) ?? getValue()}
                 tab="browsers"
@@ -298,7 +280,7 @@ export default function EventsTable() {
           header: "OS",
           accessorKey: "os",
           cell: ({ getValue }) => (
-            <div className="flex items-center gap-3" title={getValue()}>
+            <div className="flex items-center gap-3">
               <DeviceIcon
                 display={capitalize(getValue()) ?? getValue()}
                 tab="os"
@@ -313,7 +295,7 @@ export default function EventsTable() {
           header: "Referer",
           accessorKey: "referer",
           cell: ({ getValue }) => (
-            <div className="flex items-center gap-3" title={getValue()}>
+            <div className="flex items-center gap-3">
               {getValue() === "(direct)" ? (
                 <Link2 className="h-4 w-4" />
               ) : (
@@ -332,9 +314,7 @@ export default function EventsTable() {
           accessorKey: "ip",
           cell: ({ getValue }) =>
             getValue() ? (
-              <span className="truncate" title={getValue()}>
-                {getValue()}
-              </span>
+              <span className="truncate">{getValue()}</span>
             ) : (
               <Tooltip content="We do not record IP addresses for EU users.">
                 <span className="cursor-default truncate underline decoration-dotted">

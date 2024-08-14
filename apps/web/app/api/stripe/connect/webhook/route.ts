@@ -1,6 +1,5 @@
 import { stripe } from "@/lib/stripe";
 import Stripe from "stripe";
-import { accountApplicationDeauthorized } from "./account-application-deauthorized";
 import { checkoutSessionCompleted } from "./checkout-session-completed";
 import { customerCreated } from "./customer-created";
 import { invoicePaid } from "./invoice-paid";
@@ -9,7 +8,6 @@ const relevantEvents = new Set([
   "customer.created",
   "checkout.session.completed",
   "invoice.paid",
-  "account.application.deauthorized",
 ]);
 
 export const POST = async (req: Request) => {
@@ -52,9 +50,6 @@ export const POST = async (req: Request) => {
       break;
     case "invoice.paid":
       response = await invoicePaid(event);
-      break;
-    case "account.application.deauthorized":
-      response = await accountApplicationDeauthorized(event);
       break;
   }
 

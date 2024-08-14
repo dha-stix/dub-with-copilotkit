@@ -133,8 +133,6 @@ export const VALID_ANALYTICS_FILTERS = [
 
 export const EVENT_TYPES = ["clicks", "leads", "sales"] as const;
 
-export const ANALYTICS_VIEWS = ["default", "funnel"] as const;
-
 export const OLD_ANALYTICS_ENDPOINTS = [
   "clicks",
   "count",

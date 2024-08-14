@@ -1,4 +1,3 @@
-import { DubApiError } from "@/lib/api/errors";
 import { withSession } from "@/lib/auth";
 import { unsubscribe } from "@/lib/flodesk";
 import { prisma } from "@/lib/prisma";
@@ -8,14 +7,6 @@ import { R2_URL, nanoid, trim } from "@dub/utils";
 import { waitUntil } from "@vercel/functions";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-
-const updateUserSchema = z.object({
-  name: z.preprocess(trim, z.string().min(1).max(64)).optional(),
-  email: z.preprocess(trim, z.string().email()).optional(),
-  image: z.string().url().optional(),
-  source: z.preprocess(trim, z.string().min(1).max(32)).optional(),
-  defaultWorkspace: z.preprocess(trim, z.string().min(1)).optional(),
-});
 
 // GET /api/user – get a specific user
 export const GET = withSession(async ({ session }) => {
@@ -65,41 +56,27 @@ export const GET = withSession(async ({ session }) => {
   });
 });
 
+const updateUserSchema = z.object({
+  name: z.preprocess(trim, z.string().min(1).max(64)).optional(),
+  email: z.preprocess(trim, z.string().email()).optional(),
+  image: z.string().url().optional(),
+  source: z.preprocess(trim, z.string().min(1).max(32)).optional(),
+  defaultWorkspace: z.preprocess(trim, z.string().min(1)).optional(),
+});
+
 // PATCH /api/user – edit a specific user
 export const PATCH = withSession(async ({ req, session }) => {
   let { name, email, image, source, defaultWorkspace } =
     await updateUserSchema.parseAsync(await req.json());
 
-  if (image) {
-    const { url } = await storage.upload(
-      `avatars/${session.user.id}_${nanoid(7)}`,
-      image,
-    );
-    image = url;
-  }
-
-  if (defaultWorkspace) {
-    const workspaceUser = await prisma.projectUsers.findFirst({
-      where: {
-        userId: session.user.id,
-        project: {
-          slug: defaultWorkspace,
-        },
-      },
-    });
-
-    if (!workspaceUser) {
-      throw new DubApiError({
-        code: "forbidden",
-        message: `You don't have access to the workspace ${defaultWorkspace}.`,
-      });
-    }
-  }
-
-  // TODO:
-  // Email change should require a verification process before updating the email in the database
-
   try {
+    if (image) {
+      const { url } = await storage.upload(
+        `avatars/${session.user.id}_${nanoid(7)}`,
+        image,
+      );
+      image = url;
+    }
     const response = await prisma.user.update({
       where: {
         id: session.user.id,
@@ -115,9 +92,7 @@ export const PATCH = withSession(async ({ req, session }) => {
 
     waitUntil(
       (async () => {
-        // Delete only if a new image is uploaded and the old image exists
         if (
-          image &&
           session.user.image &&
           session.user.image.startsWith(`${R2_URL}/avatars/${session.user.id}`)
         ) {
@@ -129,13 +104,18 @@ export const PATCH = withSession(async ({ req, session }) => {
     return NextResponse.json(response);
   } catch (error) {
     if (error.code === "P2002") {
-      throw new DubApiError({
-        code: "conflict",
-        message: "Email is already in use.",
-      });
+      // return res.status(422).end("Email is already in use.");
+      return NextResponse.json(
+        {
+          error: {
+            code: "conflict",
+            message: "Email is already in use.",
+          },
+        },
+        { status: 422 },
+      );
     }
-
-    throw error;
+    return NextResponse.json({ error }, { status: 500 });
   }
 });
 

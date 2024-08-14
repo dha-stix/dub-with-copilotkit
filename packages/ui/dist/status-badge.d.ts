@@ -71,7 +71,6 @@ import './icons/nucleo/download.js';
 import './icons/nucleo/earth-position.js';
 import './icons/nucleo/eye-slash.js';
 import './icons/nucleo/filter-bars.js';
-import './icons/nucleo/filter2.js';
 import './icons/nucleo/flag-wavy.js';
 import './icons/nucleo/flag2.js';
 import './icons/nucleo/gaming-console.js';

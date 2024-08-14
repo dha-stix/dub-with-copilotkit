@@ -5,11 +5,10 @@ import { PropsWithChildren } from 'react';
 declare const CardContext: react.Context<{
     hovered: boolean;
 }>;
-declare function CardListCard({ outerClassName, innerClassName, children, onClick, hoverStateEnabled, }: PropsWithChildren<{
+declare function CardListCard({ outerClassName, innerClassName, children, onClick, }: PropsWithChildren<{
     outerClassName?: string;
     innerClassName?: string;
     onClick?: () => void;
-    hoverStateEnabled?: boolean;
 }>): react_jsx_runtime.JSX.Element;
 
 export { CardContext, CardListCard };

@@ -83,8 +83,21 @@ export const POST = withWorkspace(
       : undefined;
 
     try {
+      let logoUrl: string | undefined;
+      const integrationId = nanoid(25);
+
+      if (logo) {
+        const result = await storage.upload(
+          `integrations/${integrationId}_${nanoid(7)}`,
+          logo,
+        );
+
+        logoUrl = result.url;
+      }
+
       const { oAuthApp, ...integration } = await prisma.integration.create({
         data: {
+          id: integrationId,
           projectId: workspace.id,
           userId: session.user.id,
           name,
@@ -94,6 +107,7 @@ export const POST = withWorkspace(
           description,
           readme,
           screenshots,
+          ...(logoUrl && { logo: logoUrl }),
           oAuthApp: {
             create: {
               clientId,
@@ -124,22 +138,6 @@ export const POST = withWorkspace(
           oAuthApp: true,
         },
       });
-
-      if (logo) {
-        const { url } = await storage.upload(
-          `integrations/${integration.id}_${nanoid(7)}`,
-          logo,
-        );
-
-        await prisma.integration.update({
-          where: {
-            id: integration.id,
-          },
-          data: {
-            logo: url,
-          },
-        });
-      }
 
       return NextResponse.json(
         {

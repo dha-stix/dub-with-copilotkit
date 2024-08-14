@@ -21,15 +21,17 @@ import { mutate } from "swr";
 import { useTransferLinkModal } from "../modals/transfer-link-modal";
 import { ThreeDots } from "../shared/icons";
 import { LinksListContext, ResponseLink } from "./links-container";
-import { useCopilotAction } from "@copilotkit/react-core"
+interface Props { 
+  link: ResponseLink;
+}
 
-
-export function LinkControls({ link }: { link: ResponseLink }) {
+export function LinkControls({ link }: Props) {
   const { slug } = useParams() as { slug?: string };
 
   const { hovered } = useContext(CardList.Card.Context);
 
   const { openMenuLinkId, setOpenMenuLinkId } = useContext(LinksListContext);
+
   const openPopover = openMenuLinkId === link.id;
   const setOpenPopover = (open: boolean) => {
     setOpenMenuLinkId(open ? link.id : null);
@@ -50,13 +52,13 @@ export function LinkControls({ link }: { link: ResponseLink }) {
   const { setShowTransferLinkModal, TransferLinkModal } = useTransferLinkModal({
     props: link,
   });
-  const { setShowDeleteLinkModal, DeleteLinkModal } = useDeleteLinkModal({
+  const {setShowDeleteLinkModal, DeleteLinkModal } = useDeleteLinkModal({
     props: link,
   });
   const { setShowLinkQRModal, LinkQRModal } = useLinkQRModal({
     props: link,
   });
-  const { setShowAddEditLinkModal, AddEditLinkModal } = useAddEditLinkModal({
+  const {setShowAddEditLinkModal,  AddEditLinkModal } = useAddEditLinkModal({
     props: link,
   });
 
@@ -113,45 +115,7 @@ export function LinkControls({ link }: { link: ResponseLink }) {
     },
   );
 
-  useCopilotAction({
-    name: "deleteShortLink",
-    description: "delete a link from the database via its ID",
-    parameters: [
-      {
-        name: "id",
-        type: "string",
-        description: "The ID of a short link",
-        required: true,
-      },
-    ],
-    render: "Deleting link...",
-    handler: async ({ id }) => {
-      if (!id) return;
-      console.log({ id });
-      setOpenPopover(false);
-      setShowDeleteLinkModal(true);
-    },
-  });
-
-  useCopilotAction({
-    name: "editShortLink",
-    description: "edit a link from the database via its ID",
-    parameters: [
-      {
-        name: "id",
-        type: "string",
-        description: "The ID of a short link",
-        required: true,
-      },
-    ],
-    render: "Editing link...",
-    handler: async ({ id }) => {
-      if (!id) return;
-      setOpenPopover(false);
-      setShowAddEditLinkModal(true);
-    },
-  });
-
+ 
 
   return (
     <div className="flex justify-end">

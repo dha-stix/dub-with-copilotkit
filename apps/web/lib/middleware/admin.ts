@@ -2,11 +2,12 @@ import { parse } from "@/lib/middleware/utils";
 import { DUB_WORKSPACE_ID } from "@dub/utils";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
-import { prismaEdge } from "../prisma/edge";
+import { conn } from "../planetscale";
 import { UserProps } from "../types";
 
 export default async function AdminMiddleware(req: NextRequest) {
   const { path } = parse(req);
+  let isAdmin = false;
 
   const session = (await getToken({
     req,
@@ -17,25 +18,20 @@ export default async function AdminMiddleware(req: NextRequest) {
     user?: UserProps;
   };
 
-  if (!session?.user?.id) {
-    return NextResponse.redirect(new URL("/login", req.url));
+  const response = await conn
+    .execute("SELECT projectId FROM ProjectUsers WHERE userId = ?", [
+      session?.user?.id,
+    ])
+    .then((res) => res.rows[0] as { projectId: string } | undefined);
+
+  if (response?.projectId === DUB_WORKSPACE_ID) {
+    isAdmin = true;
   }
 
-  const response = await prismaEdge.projectUsers.findUnique({
-    where: {
-      userId_projectId: {
-        userId: session.user.id,
-        projectId: DUB_WORKSPACE_ID,
-      },
-    },
-  });
-
-  if (!response) {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
-
-  if (path === "/login") {
+  if (path === "/login" && isAdmin) {
     return NextResponse.redirect(new URL("/", req.url));
+  } else if (path !== "/login" && !isAdmin) {
+    return NextResponse.redirect(new URL(`/login`, req.url));
   }
 
   return NextResponse.rewrite(
