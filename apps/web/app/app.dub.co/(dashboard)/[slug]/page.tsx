@@ -15,7 +15,7 @@ export default function WorkspaceLinks() {
                 labels={{
                     title: "Dub.co Copilot",
                     initial:
-                        "Hello there! I can help you create, edit, and delete short links in your workspace.",
+                        "Hello there! I can help you create and delete short links in your workspace.",
                 }}
                 clickOutsideToClose={false}
             ></CopilotPopup>
