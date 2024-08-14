@@ -13,7 +13,7 @@ export default function WorkspaceLinks() {
                 instructions='Help the user create and delete links from the workspace'
                 defaultOpen={true}
                 labels={{
-                    title: "Dub.sh Copilot",
+                    title: "Dub.co Copilot",
                     initial:
                         "Hello there! I can help you create, edit, and delete short links in your workspace.",
                 }}
